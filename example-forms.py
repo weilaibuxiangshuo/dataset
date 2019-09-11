@@ -3,16 +3,13 @@ from utils.forms import FormMixin
 from .models import Data, DealType
 import re
 
-
 class DataFrom(forms.Form, FormMixin):
 	title = forms.CharField(max_length=64, required=True,
-							error_messages={"required": "数据类型名不能为空", "max_length": "数据类型名过长"})
-
+						error_messages={"required": "数据类型名不能为空", "max_length": "数据类型名过长"})
 
 class DealTypeFrom(forms.Form, FormMixin):
 	title = forms.CharField(max_length=32, required=True,
 							error_messages={"required": "交易类型名不能为空", "max_length": "交易类型名过长"})
-
 
 class DataCardFrom(forms.Form, FormMixin):
 	card_number = forms.CharField(max_length=32, required=True,
@@ -25,7 +22,6 @@ class DataCardFrom(forms.Form, FormMixin):
 
 	def clean(self):
 		cleaned_data = super(DataCardFrom, self).clean()
-
 		balance = cleaned_data.get("balance")
 		if not re.match("^(-?\d+)(\.\d+)?$", balance):
 			raise forms.ValidationError("余额必须是数字")
