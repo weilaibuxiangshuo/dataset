@@ -1,0 +1,23 @@
+class MyForm(forms.Form):
+    username=forms.CharField(min_length=5,max_length=56,required=True,error_messages={'required': 'Please enter your name'}
+                              ,widget=forms.TextInput(attrs={'placeholder': '用户名','class':'layui-input'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get("username")
+        print(username,'kkk')
+        msg="这个都是啥情况"
+        self.add_error('username', msg)
+        # raise forms.ValidationError("Articles in a set must have distinct titles.")
+
+
+记得要传递request 进去，如果是get就传request.GET
+class Login(View):
+    def post(self,request):
+        obj = MyForm(request.POST)
+        print( obj.is_valid(), obj.errors)
+        if obj.is_valid():
+            print(obj.errors, 'error')
+        else:
+            print(obj.errors, '555')
+        return render(request, 'login.html', {"form": obj})
