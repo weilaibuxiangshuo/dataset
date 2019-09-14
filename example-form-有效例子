@@ -20,4 +20,7 @@ class Login(View):
             print(obj.errors, 'error')
         else:
             print(obj.errors, '555')
+            ""因为obj.errors是字典可以直接使用key进行重新定义错误信息""
+            obj.errors['username']="测试一下"
+            print(obj.errors['username'], '666')
         return render(request, 'login.html', {"form": obj})
