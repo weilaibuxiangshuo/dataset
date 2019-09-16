@@ -1,0 +1,157 @@
+环境:centos7.4
+
+注意：
+1.在python要调用mysql 需要安装mysqlclient 对应要求源为 python-devel mysql-devel 这两个要安装否则报错
+官方文档：https://pypi.org/project/mysqlclient/
+2.如果没有调用mysql, 只安装python需要安装源 python-devel.x86_64
+
+
+安装nginx
+
+yum -y install pcre pcre-devel zlib zlib-devel openssl openssl-devel gcc gcc-c++
+http://nginx.org/packages/centos/7/x86_64/RPMS/nginx-1.14.2-1.el7_4.ngx.x86_64.rpm
+https://files.pythonhosted.org/packages/36/fa/51ca4d57392e2f69397cd6e5af23da2a8d37884a605f9e3f2d3bfdc48397/pip-19.0.3.tar.gz
+https://files.pythonhosted.org/packages/c2/f7/c7b501b783e5a74cf1768bc174ee4fb0a8a6ee5af6afa92274ff964703e0/setuptools-40.8.0.zip
+
+安装python3.6.8
+
+yum  -y  install  bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel  libffi-devel  tk-devel gcc gcc-c++ openssl  openssl-devel
+*yum中如果有nginx已经安装就不需要重新安装
+wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz
+tar xf Python-3.6.8.tar.xz 
+cd Python-3.6.8/
+mkdir /usr/local/python3
+./configure --prefix=/usr/local/python3
+make -j8 
+make -j8 install
+ln -s /usr/local/python3/bin/python3.6 /usr/bin/python3
+ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3
+python3 -V
+
+安装mysql 
+wget http://repo.mysql.com/mysql57-community-release-el7-8.noarch.rpm
+yum -y install mysql57-community-release-el7-8.noarch.rpm
+yum -y install mysql-server
+systemctl start mysqld
+systemctl enable mysqld #设置开机自动启动
+ps -C mysqld #检查是否有进程
+netstat -utnlp | grep mysqld #看服务端口是否启动
+grep password /var/log/mysqld.log #查询初始化密码C8&rp/gN#ijd
+mysql -hlocalhost -uroot -p'系统产生的随机密码'
+mysql>set global validate_password_policy=0; 只检查密码的长度
+mysql>set global validate_password_length=6; 密码长度不能小于6个
+mysql>alter user root@"localhost" identified by "weilai"; #用于改密码
+mysql>alter user root@"localhost" identified by "Hdug&34dg1Gd";
+]#vim /etc/my.cnf
+[mysqld]#这个不放进去，以下如果不放，你用简短密码后期还是无法登陆，长密码无所谓
+validate_password_policy=0
+validate_password_length=6
+lower_case_table_names=1 //忽略大小写
+:wq
+]#systemctl restart mysqld
+
+
+
+安装虚拟机virtualenv
+
+1.创建虚拟环境命令：
+sudo pip install virtualenv 或 sudo pip install virtualenv
+sudo pip3 install virtualenvwrapper 或 sudo pip3 install virtualenvwrapper （为了命令更好用）
+2.查找virtualenvwrapper所在的路径(记得加.sh要不然查到出来的路径不正确)
+whereis virtualenvwrapper.sh或 find / -name virtualenvwrapper.sh
+3.创建一个管理所有virtualenvwrapper的存放文件夹，一般建议在home目录下
+例：mkdir /home/rock/.virtualenvs
+4.查找 .bashrc 配置文件所在路径
+一般在/root/.bashrc
+添加以下两句：
+export WORKON_HOME=路径/.virtualenvs
+source virtualenvwrapper.sh的存放路径
+保存退出，并执行
+source 路径/.bashrc(激活更新配置)
+例：
+export WORKON_HOME=/home/rock/.virtualenvs
+source /usr/local/bin/virtualenvwrapper.sh
+配置好后要执行以下命令才生效：
+source .bashrc
+5.创建跟退出
+创建新虚拟环境：mkvirtualenv 名称
+例：mkvirtualenv python001
+退出环境：deactivate
+如果想指定一个python3来运行的虚拟环境
+mkvirtualenv python002 -p python3路径
+例：mkvirtualenv python002 -p /usr/bin/python3
+6.快速激活虚拟环境
+workon 虚拟环境名称
+例：workon python001
+
+安装uwsgi
+
+pip install uwsgi
+配置文件如下：
+[uwsgi]
+# 和nginx配置使用时进行设置
+# uwsgi服务器启动之后绑定的ip和port
+socket=127.0.0.1:8001
+# 直接做web服务器使用
+# web服务器启动之后绑定的ip和port
+# http=127.0.0.1:8080
+# 项目目录(xuexi是项目名字，如果你的项目名不是叫这个要改变)
+chdir=/home/python/xuexi# 项目中wsgi.py文件的目录，相对于项目目录(xuexi是项目名字，如果你的项目名不是叫这个要改变)
+wsgi-file=xuexi/wsgi.py
+# 启动服务器之后工作进程数(接收客户的请求)
+processes=4
+# 启动服务器之后每个工作进程中线程数
+threads=2
+# 主进程
+master=True
+# 启动服务器之后，会在项目目录下生成一个uwsgi.pid文件，保存主进程id
+pidfile=uwsgi.pid
+# 服务器在后台运行，并且启动服务器之后，会在项目目录下生成一个uwsgi.log文件，保存日志信息
+daemonize=uwsgi.log
+# 使用的虚拟环境的路径
+#virtualenv=/home/rock/.virtualenvs/python002
+
+nginx 配置文件相应端口下写入
+    location / {
+        include /etc/nginx/uwsgi_params;
+        uwsgi_pass localhost:8001;
+    }
+nginx -s reload     #nginx重载配置文件
+
+
+安装redis
+
+下载redis并安装:
+wget http://download.redis.io/releases/redis-5.0.5.tar.gz
+yum -y install gcc gcc-c++
+tar -zxvf redis-5.0.5.tar.gz
+cd redis-5.0.5
+make MALLOC=libc
+cd src && make install
+ls ./redis-server   #查看启动文件是否存在
+nohup ./redis-server > /home/redis.file 2>&1 &    #后台启动redis
+接下可以开始启动，客户端，测试一下
+./redis-cli 
+进入客户端后
+set home "ceshi"
+get home
+
+python3中设置redis
+
+在settins中添加如下：
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {"max_connections": 100}
+            # "PASSWORD": "123",
+        }
+    }
+}
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = 60 * 5    #设置5分钟过期
+
