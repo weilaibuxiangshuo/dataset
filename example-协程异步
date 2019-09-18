@@ -1,7 +1,84 @@
 
 import time
 import threading
+-------------------------------------------------------------
+#初始版本
+gen=None #定义全局变量
 
+def IongIo():
+    def run():
+        print("开始AA")
+        time.sleep(3)
+        print("结束AA")
+        try:
+            # 返回数据
+            global gen
+            gen.send('这个是返回数据')
+        except StopIteration as e:
+            pass
+    threading.Thread(target=run).start()
+
+def B():
+    print("开始B")
+    res= yield IongIo()
+    print("接收到的数据",res)
+    print("结束B")
+
+
+def C():
+    print("开始C")
+    print("结束C")
+
+def main():
+    global gen
+    gen=B()
+    next(gen)
+    C()
+
+if __name__=="__main__":
+    main()
+-------------------------------------------------------------
+进化版本：(用装饰器代替，使B跟c的函数在main中调用写法一样)
+gen=None
+def IongIo():
+    def run():
+        print("开始AA")
+        time.sleep(3)
+        print("结束AA")
+        try:
+            # 返回数据
+            global gen
+            gen.send('这个是返回数据')
+        except StopIteration as e:
+            pass
+    threading.Thread(target=run).start()
+
+def gencontent(func):
+    def wrapper():
+        global gen
+        gen = func()
+        next(gen)
+    return wrapper
+
+@gencontent
+def B():
+    print("开始B")
+    res= yield IongIo()
+    print("接收到的数据",res)
+    print("结束B")
+
+
+def C():
+    print("开始C")
+    print("结束C")
+
+def main():
+    B()
+    C()
+
+if __name__=="__main__":
+    main()
+-------------------------------------------------------------
 #最终版本：
 def IongIo():
     print("开始AA")
