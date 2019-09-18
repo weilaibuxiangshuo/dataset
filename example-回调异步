@@ -1,0 +1,34 @@
+def IongIo(callback):
+    def wrapper(func):
+        print("开始AA")
+        time.sleep(3)
+        print("结束AA")
+        data="这个是处理完要返回的结果"
+        func(data)
+    threading.Thread(target=wrapper,args=(callback,)).start()
+
+
+def finish(data):
+    print("开始处理回调数据")
+    print("正在处理回调数据",data)
+    print("结束处理回调数据")
+
+
+def B():
+    print("开始B")
+    res= IongIo(finish)
+    print("接收到的数据",res)
+    print("结束B")
+
+
+def C():
+    print("开始C")
+    print("结束C")
+
+def main():
+
+    B()
+    C()
+
+if __name__=="__main__":
+    main()
