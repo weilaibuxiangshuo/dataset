@@ -1,0 +1,17 @@
+html中先定义windows：
+<script>
+window.editmain="{% url "project:editmain" %}";
+</script>
+
+然后js文件中可以如此调用
+    $.ajax({
+        url:editmain,
+        data:{}
+    })
+    
+    
+    
+另外如果想到js能识别layui或者vue可以直接html中body最后引用
+<body>
+<script src="{% url 'project:ceshi' %}"></script>
+</body>
