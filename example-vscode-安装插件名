@@ -1,0 +1,11 @@
+Auto Rename Tag
+chinese    //显示中文界面
+Indent-Rainbow
+Live Server   //可直接启动浏览  启动 alt+L 再按 alt+O  关闭 alt+L 再按 alt+C
+Open in Browser  //使用当关浏览器临时浏览器   alt + B
+Output Colorizer
+Path Intellisense   //路径选择器
+Vetur
+vue
+Vue 2 Snippets
+vue-beautify
