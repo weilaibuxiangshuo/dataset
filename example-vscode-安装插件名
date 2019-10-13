@@ -1,11 +1,14 @@
-Auto Rename Tag
+Auto Rename Tag   //修改HTML标签时，自动修改匹配的标签
 chinese    //显示中文界面
-Indent-Rainbow
+Indent-Rainbow  //代码缩进提供颜色上的提示
 Live Server   //可直接启动浏览  启动 alt+L 再按 alt+O  关闭 alt+L 再按 alt+C
 Open in Browser  //使用当关浏览器临时浏览器   alt + B
-Output Colorizer
-Path Intellisense   //路径选择器
-Vetur
+Output Colorizer   //彩色输出信息
+Path Intellisense   //编辑器中输入路径时,自动补全
+Vetur   //Vue语法高亮
 vue
-Vue 2 Snippets
-vue-beautify
+VueHelper // vue代码提示插件，包括了vue2所有api，vue-router2和vuex2的代码提示
+Vue 2 Snippets   //基于最新的 Vue 官方语法高亮文件添加了语法高亮，并且依据 Vue 2 的 API 添加了代码补全
+vue-beautify   // vue中 代码高亮
+beautify   // javascript, JSON, CSS, Sass, HTML 代码高亮
+Indenticator //缩进高亮
