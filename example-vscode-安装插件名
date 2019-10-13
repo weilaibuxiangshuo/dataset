@@ -12,3 +12,9 @@ Vue 2 Snippets   //基于最新的 Vue 官方语法高亮文件添加了语法�
 vue-beautify   // vue中 代码高亮
 beautify   // javascript, JSON, CSS, Sass, HTML 代码高亮
 Indenticator //缩进高亮
+
+
+
+VSCode空格变成虚点
+"editor.renderWhitespace": "all",
+或者直接搜索renderWhitespace   设置为  all 就可以
