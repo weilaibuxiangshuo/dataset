@@ -1,0 +1,37 @@
+vue初始项目搭建:
+  npm install -g vue-cli vue全局脚手架搭建
+  vue init webpack 项目初始化
+  之后填写一系列的作者，姓名，事项
+  安装所需要的依赖 npm install
+  本地开发运行项目 npm run dev
+  项目开发完毕进行打包 npm run build
+
+vue 配置路由:
+  router文件夹下
+    index,js
+    routes列表下添加路径
+  将写好的页面和路径进行映射
+
+VUE页面进行跳转:
+  this.$router.push()
+    this.$router.push('/home/first') 字符串 
+    this.$router.push({ path: '/home/first' }) 对象
+    this.$router.push({ name: 'home', params: { userId: wise }}) 命名的路由
+  router-view 页面之间的包含关系
+  router-link a标签的跳转
+
+VUE中引入axios 在main.js中引入
+  axios import axios from 'axios' 
+  修改vue的原型 Vue.prototype.$http= axios 
+  发送post请求 self.$http.post({}) 
+  发送get请求 self.$http.get()
+
+vue中引入element-ui 
+  下载安装npm install element-ui --save 
+  在main.js中引入import ElementUI from ' element-ui' 
+  引入所需要的样式 import 'element-ui/lib/theme-chalk/index.css' 
+  Vue.use(ElementUI)
+
+
+
+  
