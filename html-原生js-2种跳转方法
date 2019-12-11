@@ -1,0 +1,17 @@
+  var aLink = document.getElementsByClassName('aLink');
+  for (var i = 0; i < aLink.length; i++) {
+    let index = Math.floor(Math.random() * getEN().length);
+    let httpUrl = getEN()[index]
+    //第一种方法，直接修改href属性
+    // aLink[i].setAttribute('href', httpUrl);
+    //第二种方法，添加点击事件，利用window.location.href跳转,注意一定要返回return false
+    aLink[i].onclick=function(){
+      window.location.href=httpUrl;
+      return false
+    }
+    if ('textContent' in aLink[i].getElementsByTagName('span')[0]) {
+      aLink[i].getElementsByTagName('span')[0].textContent = httpUrl.substring(7)
+    } else {
+      aLink[i].getElementsByTagName('span')[0].innerText = httpUrl.substring(7)
+    }
+  }
