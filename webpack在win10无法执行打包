@@ -1,0 +1,15 @@
+1.在windows10下面webpack执行打包时候提示如下：
+
+打包：webpack ./js/main.js -o ./js/bundle.js
+
+webpack : 无法加载文件 C:\Users\Administrator\AppData\Roaming\npm\webpack.ps1，因为在此系统上禁止运行脚本。有关详细信
+息，请参阅 http://go.microsoft.com/fwlink/?LinkID=135170 中的 about_Execution_Policies。
+
+这个是由于win10中powershell权限不够，具体处理以下
+
+打开目录：C:\Windows\System32\WindowsPowerShell\v1.0
+以管理员的身份运行：powershell.exe
+打开了命令行之后,输入set-ExecutionPolicy RemoteSigned，
+在出来的选项中输入A，更改权限，即可正常执行打包,通过 get-ExecutionPolicy 查看当前的状况
+webpack ./js/main.js -o ./js/bundle.js
+
