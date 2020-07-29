@@ -1,4 +1,5 @@
 一、前期工作
+nginx,mysql,virtualenv安装方式就不在讲了，自行查阅其它文档
 
 1.vue打包
     *注意vue-cli打包是不会把devServer代理打包进去的，因为devServer只用于开发环境，所以，nginx不用考虑vue代理设置的问题
@@ -56,4 +57,54 @@
 
   }
 
+3.supervisor安装与配置（这个程序只支持python2，支持python3要网上找，这里虚拟机外层是python2，虚拟机内层是python3，所以不影响，用外层驱动内层）
 
+   yum install epel-release
+   yum install -y supervisor
+   
+   生成配置文件
+   echo_supervisord_conf > etc/supervisord.conf
+   
+   修改配置文件：vim /etc/supervisord.conf，将这几行的注释放开
+   [inet_http_server]         ; inet (TCP) server disabled by default
+   port=*:9001        ; (ip_address:port specifier, *:port for all iface)
+   username=user              ; (default is no username (open server))
+   password=123               ; (default is no password (open server))
+   意思是将web服务页面打开，需要注意ip地址要写*，否则外网访问不了，而username和password就是登录服务页面的用户名和密码，可以改的复杂一点，另外阿里云也需要向外网暴露一下9001端口
+   
+   创建命令文件：在此目录下/etc/supervisord.d创建 ceshi.ini (文件名可以随便，后缀必须为.ini)，并写入下面命令
+   *由于command一般只能写一条，因为tornado程序是在virtualenv中，所有需要先激活虚拟环境，要写多行命令，之前测试有写一个.sh文件，在执行此方法不通，最后通过如下实现
+   *使用/bin/bash -c 来执行，可以将多条命令通过&&拼接实现，启动的时候会有一个主进程跟子进程（子进程是python server.py）,所以，要设置stopasgroup跟killasgroup为真，停止或删除连同子进程一起操作
+   *如果没有设置上面两个，子进程是不是停止或者删除，下次启动会报错，director是设置启动时supervisor先跳转到的目录，其它功能自行查看supervisor具体教程   
+   [program:mytornado]
+   command=/bin/bash -c "export WORKON_HOME=/home/.virtualenvs&&source /usr/bin/virtualenvwrapper.sh&&workon tornado1&&python server.py"
+   director=/home/project/main   
+   autorestart=true
+   user=root
+   stopasgroup=true
+   killasgroup=true
+   
+   指定配置文件使用-c
+   supervisord -c /etc/supervisord.conf
+   
+   重启配置文件
+   supervisorctl reload
+   
+4.tornado注意事项
+   1.由于tornado是使用python直接启用，会出现加不到模块，所以，文件之间都要是__init__.py是包文件，并且在server.py主文件开头，需要把当前主项目的路径加到系统中
+   import os,sys
+   mainpath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   #根据目录结构调整
+   sys.path.append(mainpath)
+   
+   2.mysql数据连接的问题，有报 Warning: (3090, "Changing sql mode 'NO_AUTO_CREATE_USER' is deprecated
+   网上的解决方法，测试有效：
+   第一种方法：登录mysql后执行命令
+   set @@GLOBAL.sql_mode='';
+   set sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+   set @@sql_mode ='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+   
+   第二种方法：修改mysql文件下
+   在my.cnf 里面设置
+   sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+   
+   
