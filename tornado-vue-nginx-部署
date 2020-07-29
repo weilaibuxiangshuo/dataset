@@ -1,0 +1,27 @@
+一、前期工作
+
+1.vue打包
+    *注意vue-cli打包是不会把devServer代理打包进去的，因为devServer只用于开发环境，所以，nginx不用考虑vue代理设置的问题
+    *但vue中打包的时候，baseURL设置非常重要，会影响到nginx设置，如果baseURL有设置加/api,vue所有访问请求都会加上/api，所以要分清楚
+    第一：vue在打包之前先安装插件
+    npm install --save-dev compression-webpack-plugin
+
+    第二：设置vue.config.js
+    首先引：
+    const CompressionPlugin = require("compression-webpack-plugin")
+    const path = require("path");
+    const productionGzipExtensions = ['js', 'css'];
+    找到module.exports中的configureWebpack对象里面，添加如下：
+        plugins: [
+          new CompressionPlugin({
+            algorithm: 'gzip',
+            test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+            threshold: 10240, //内容超过10KB进行压缩
+            deleteOriginalAssets:true,  //会删除原文件
+          })
+        ],
+    第三：找到utils里面的request.js，修改baseURL为baseURL="/api"，因为后期nginx会设置一个/api，所以这边先设置好
+
+    第四：打包并上传到相应服务器
+    
+
