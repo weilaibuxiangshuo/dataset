@@ -24,4 +24,36 @@
 
     第四：打包并上传到相应服务器
     
+2.nginx配置
+    upstream tornadoes {
+        server 127.0.0.1:8088;
+        }
+   
+    server {
+        listen       80;#默认端口是80，如果端口没被占用可以不用修改
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        root        /home/ceshi/dist/;
+
+        location / {
+            index  index.html index.htm;
+            try_files $uri $uri/ /index.html;   
+        }
+        location /static {                 #这里也要特别注意，vue打包为gzip模式，需要设置访问的静态目录，如没有设置，让vue自动渲染，会报语法错误
+        alias /home/ceshi/dist/static/; 
+        }
+        location /api/ {
+            proxy_pass_header Server;
+            proxy_set_header Host $http_host;
+            proxy_redirect off;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Scheme $scheme;
+            proxy_pass http://tornadoes/;     #注意反代网址后面有加斜杠(/)，代表/api/是不会添加到uri后面，像alias一样效果，因为上面vue打包有加/api，tornado项目的路由是没有加/api,
+                                              #所以这边要设置最后有带/,
+        }
+
+  }
+
 
