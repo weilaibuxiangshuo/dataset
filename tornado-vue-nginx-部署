@@ -58,6 +58,8 @@ nginx,mysql,virtualenv安装方式就不在讲了，自行查阅其它文档
   }
 
 3.supervisor安装与配置（这个程序只支持python2，支持python3要网上找，这里虚拟机外层是python2，虚拟机内层是python3，所以不影响，用外层驱动内层）
+   *注意：如果项目重新更新，需要先停止supervisor，用kill停止进程，并且到/var/run/supervisor/下面把对应supervisor.sock删除，启动的时候supervisor会在生成
+   *如果不删除，项目更新后，直接启动会报错
 
    yum install epel-release
    yum install -y supervisor
