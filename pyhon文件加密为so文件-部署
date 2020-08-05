@@ -10,6 +10,11 @@ pip install cython
     用cython将核心代码py模块文件转化成.c 文件
     cython hello.py 或者 cython *.py（转换全部py文件）
     转换后会多出hello.c的文件
+    ***注意：如果是python3环境一定要指定版本编译  cython -3 hello.py 这样才可以，如果python2环境，cython -2 hello.py或不指定cython hello.py
+    ***如果python3环境没有指定如下报错：
+    /usr/local/lib/python3.8/site-packages/Cython/Compiler/Main.py:369: FutureWarning: Cython directive 'language_level' not set, 
+    using 2 for now (Py2). This will change in a later release! File: /home/domainjump/urls.py
+    
     
   2.搜索python环境的Python.h文件路径（第一个字母大写），下面转换需要用到
   
