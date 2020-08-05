@@ -1,0 +1,21 @@
+第一：需在先安装gcc
+yum -y install gcc
+第二：需要在python环境下安装cython
+pip install cython
+
+*如有报错再安装python3-dev，没有一般不用安装
+
+第三：在python环境中如下转换文件：
+  1.
+    用cython将核心代码py模块文件转化成.c 文件
+    cython hello.py 或者 cython *.py（转换全部py文件）
+    转换后会多出hello.c的文件
+    
+  2.搜索python环境的Python.h文件路径（第一个字母大写），下面转换需要用到
+  
+  3.
+    gcc 编译成so文件(PIC全大写，另外/usr/include/python.2.7/要替换为上面搜索Python.h出来的路径，环境不同路径不同)
+    gcc -c -fPIC -I/usr/include/python.2.7/ hello.c
+    gcc -shared hello.o -o hello.so
+    
+  4.转换好后的hello.so不能直接使用Python xxx.py这样执行，只能在.py文件中正常调用hello
