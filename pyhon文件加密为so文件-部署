@@ -21,6 +21,9 @@ pip install cython
   3.
     gcc 编译成so文件(PIC全大写，另外/usr/include/python.2.7/要替换为上面搜索Python.h出来的路径，环境不同路径不同)
     gcc -c -fPIC -I/usr/include/python.2.7/ hello.c
+    或高级用法：gcc -pthread  -Wno-unused-result  -Wsign-compare  -DNDEBUG -g -fwrapv -O3 -Wall -fPIC -I/usr/local/include/python3.6m -c settings.c
+    
     gcc -shared hello.o -o hello.so
+    或高级用法：gcc -pthread -shared settings.o -o settings.so
     
   4.转换好后的hello.so不能直接使用Python xxx.py这样执行，只能在.py文件中正常调用hello
