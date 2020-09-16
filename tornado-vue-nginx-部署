@@ -83,6 +83,8 @@ nginx,mysql,virtualenv安装方式就不在讲了，自行查阅其它文档
    director=/home/project/main   
    autorestart=true
    user=root
+   ;启动 5 秒后没有异常退出，就当作已经正常启动了
+   startsecs = 5       
    stopasgroup=true
    killasgroup=true
    
